@@ -1,0 +1,118 @@
+/*-------------
+MARKUP
+
+<div class="gallery square" data-pswp>
+  <figure>
+    <a href="full-image.jpg" data-caption="Test caption">
+      <img src="thumb.jpg">
+
+OR
+
+<ul class="gallery square" data-pswp>
+  <li>
+    <a href="full-image.jpg">
+      <img src="thumb.jpg">
+
+---------------*/
+
+.gallery{
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 1em;
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--fourcols), 1fr));
+  grid-gap:1.2rem;
+}
+
+.portfolio-links{
+  grid-template-columns: repeat(auto-fill, minmax(var(--threecols), 1fr));
+  grid-gap: 3rem 2rem;
+  margin-bottom: 3em!important;
+}
+
+.portfolio-links a{
+  /* border:2px solid transparent; */
+  box-shadow: 3px 3px 8px rgba(0,0,0,.05),-3px -3px 8px rgba(0,0,0,.1);
+  transition: all .15s ease;
+  text-decoration: none;
+}
+
+.portfolio-links a:hover{
+  /* border:2px solid var(--primary); */
+  box-shadow: 3px 3px 8px rgba(0,0,0,.4),-3px -3px 8px rgba(0,0,0,.2);
+}
+
+.portfolio-links img, .portfolio-links a{
+  border-radius:10px;
+}
+
+.gallery > *{
+  margin: 0;
+  position: relative;
+}
+
+
+.gallery a{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right:0;
+  bottom: 0;
+}
+
+.gallery img{
+  object-fit:cover;
+  display:block;
+  height:100%;
+  width:100%;
+  max-width:100%;
+}
+
+.gallery figcaption{
+  display:none;
+}
+
+/*Aspect Ratios*/
+.square > *{
+  padding-bottom: 100%;
+  height:0;
+}
+/* 4:3 */
+.landscape > *{
+  padding-bottom: 75%;
+}
+/* 4:3 */
+.portrait > *{
+  padding-bottom: 133.3333%;
+}
+/* Video 16:9*/
+.video > *{
+  padding-bottom: 177.7777%;
+}
+
+/* Change image position */
+img.top-left{object-position: 0 0;}
+img.top-right{object-position:100% 0;}
+img.bottom-left{object-position:0 100%;}
+img.bottom-right{object-position:100% 100%;}
+img.pull-up{object-position: bottom}
+img.pull-down{object-position: top;}
+img.pull-right{object-position: left;}
+img.pull-left{object-position: right;}
+
+/*Portfolio links - Home page*/
+
+.portfolio-links li{
+  position: relative;
+}
+
+.portfolio-links .caption{
+
+  padding-top: .2em;
+  text-align: center;
+  color:var(--primary);
+  z-index: 1;
+  padding-bottom: .1em;
+  font-variant: small-caps;
+  line-height: 1.1;
+}
