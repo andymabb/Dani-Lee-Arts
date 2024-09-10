@@ -12,5 +12,5 @@ Development files, build process and output files for Dani Lee Arts website.
 4. Run "Gulp" - this will:
 * Combine and compress css, js & html and output to 'dist' folder
 * Display pages in local server
-## Changes
-Only make changes in the scr folder (except images which are optimised and added directly into the 'dist' folder)
+## Note
+Images are manually optimised and added directly into the 'dist' folder
