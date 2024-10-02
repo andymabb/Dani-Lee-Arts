@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "gulp": "^5.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.4",
+    "autoprefixer": "^10.4.20",
+    "browser-sync": "^3.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-cache-bust": "^1.4.1",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-postcss": "^10.0.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-uglify": "^3.0.2",
+    "postcss-import": "^16.1.0"
+  }
+}
