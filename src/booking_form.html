@@ -46,7 +46,7 @@
     .booking-form button {
       padding: 15px;
       font-size: 20px;
-      background-color: #7A2944;
+      background-color: #8e2a5d;
       color: white;
       border: none;
       border-radius: 5px;
@@ -54,7 +54,7 @@
     }
 
     .booking-form button:hover {
-      background-color: #5b2134;
+      background-color: #94266f;
     }
 
     .booking-form {
@@ -176,7 +176,7 @@
       </div>
 
       <div>
-        <label for="organisation">Are you from an organisation? If yes, please specify:</label>
+        <label for="organisation">Are you from an organisation? Please specify:</label>
         <input type="text" id="organisation" name="organisation">
       </div>
 
@@ -255,7 +255,7 @@
           const div = document.createElement('div');
           div.classList.add('workshop-item');
           div.innerHTML = `
-            <span class="workshop-label">${workshop.projectName} - ${workshop.date} - ${workshop.artForm}</span>
+            <span class="workshop-label">${workshop.date} - ${workshop.artForm}</span>
             <input type="checkbox" class="workshop-checkbox" name="date" value="${workshop.date}">
           `;
           container.appendChild(div);
