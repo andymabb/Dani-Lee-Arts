@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en-GB"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dani Lee Arts - Workshop Booking Form</title><meta name="description" content="Book a workshop with Dani Lee Arts"><link rel="apple-touch-icon" sizes="180x180" href="img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="img/favicons/favicon-16x16.png"><link rel="manifest" href="img/favicons/site.webmanifest"><link href="css/style.css?t=1728412875770" rel="stylesheet"><script async defer="defer" src="https://apis.google.com/js/api.js"></script><script src="https://accounts.google.com/gsi/client" async defer="defer"></script><style>/* General form styles */
+<!DOCTYPE html><html lang="en-GB"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dani Lee Arts - Workshop Booking Form</title><meta name="description" content="Book a workshop with Dani Lee Arts"><link rel="apple-touch-icon" sizes="180x180" href="img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="img/favicons/favicon-16x16.png"><link rel="manifest" href="img/favicons/site.webmanifest"><link href="css/style.css?t=1728655409774" rel="stylesheet"><script async defer="defer" src="https://apis.google.com/js/api.js"></script><script src="https://accounts.google.com/gsi/client" async defer="defer"></script><style>/* General form styles */
     .booking-form {
       display: flex;
       flex-direction: column;
@@ -72,6 +72,14 @@
       margin-right: 10px;
     }
 
+    .workshop-item label{
+      display:grid;
+      grid-template-columns: repeat(2, auto);
+      justify-content: space-between;
+      gap:1em;
+      margin-bottom: 10px;
+    }
+
     .workshop-checkbox {
       margin-left: 10px;
     }
@@ -103,7 +111,7 @@
           console.log('Workshop date:', workshop.date);  // This will log the exact value of the date
           
           // Use the full date returned directly
-          const readableDate = `${workshop.date}, ${workshop.artForm}`;
+          const readableDate = `${workshop.projectName} - ${workshop.date}, ${workshop.artForm}`;
           
           const div = document.createElement('div');
           div.classList.add('workshop-item');
