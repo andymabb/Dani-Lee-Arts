@@ -106,6 +106,10 @@ select{
     height: 1.5em;
 }
 
+input[type=checkbox] {
+    accent-color: var(--primary);
+  }
+
 /* Add more space below the heading */
 h2.lede {
     margin-bottom: 30px;
