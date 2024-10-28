@@ -110,6 +110,11 @@ input[type=checkbox] {
     accent-color: var(--primary);
   }
 
+input:focus{
+    outline:none!important;
+    border: 2px solid var(--primary);
+}
+
 /* Add more space below the heading */
 h2.lede {
     margin-bottom: 30px;
