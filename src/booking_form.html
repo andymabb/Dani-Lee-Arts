@@ -135,7 +135,7 @@
       <li><a href="portfolio.html">Portfolio</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="news.html">News</a></li>
-      <li class="active"><a href="booking_form.html">Booking</a></li>
+      <li class="active"><a href="booking.html">Booking</a></li>
     </ul>
   </header>
 
@@ -192,7 +192,7 @@
         <label for="date">Select Workshop Dates:</label>
         <div id="workshop-dates-container"></div> <!-- Container for workshop dates -->
       </div>
-
+      <p>...future dates to follow</p>
       <div>
         <label for="project_marketing">How did you hear about the project?</label>
         <select id="project_marketing" name="project_marketing" required>
@@ -204,8 +204,6 @@
           <option value="presentation by Dani">Presentation by Dani at your group</option>
           <option value="other">Other</option>
         </select>
-
-        <p>...future dates to follow</p>
         
         <!-- "Other" input field in its own div for visibility -->
         <div id="other_input_container" style="display:none;">
@@ -226,7 +224,7 @@
         <li><a href="portfolio.html">Portfolio</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="news.html">News</a></li>
-        <li class="active"><a href="booking_form.html">Booking</a></li>
+        <li class="active"><a href="booking.html">Booking</a></li>
       </ul>
 
       <div class="footer-links">
@@ -244,49 +242,87 @@
   </footer>
 
   <script>
+    // Function to show/hide the "Other" input field
+    document.getElementById('project_marketing').addEventListener('change', function() {
+        const otherInputContainer = document.getElementById('other_input_container');
+        if (this.value === 'other') {
+            otherInputContainer.style.display = 'block';  // Show the input field
+        } else {
+            otherInputContainer.style.display = 'none';   // Hide the input field
+            document.getElementById('other_input').value = ''; // Clear the other input field if not used
+        }
+    });
+
     async function fetchWorkshopDates() {
-      const apiUrl = 'https://unifiedintegrations.azurewebsites.net/api/DaniLee/workshop-availability';
+        const apiUrl = 'https://unifiedintegrations.azurewebsites.net/api/DaniLee/workshop-availability-v2';
 
-      try {
-        const response = await fetch(apiUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const workshops = await response.json();
+
+            // Log the full response to see what data is being returned
+            console.log('Full response:', workshops);
+
+            const availableContainer = document.getElementById('workshop-dates-container');
+            const waitlistContainer = document.createElement('div');
+            waitlistContainer.id = 'waitlist-dates-container';
+
+            availableContainer.innerHTML = ''; // Clear existing options
+
+            // Populate available workshops dynamically
+            workshops.availableWorkshops.forEach(workshop => {
+                console.log('Available Workshop date:', workshop.date);
+
+                const readableDate = `${workshop.projectName} - ${workshop.date}, ${workshop.artForm}, ${workshop.times}`;
+                
+                const div = document.createElement('div');
+                div.classList.add('workshop-item');
+                div.innerHTML = `
+                    <span class="workshop-label">${readableDate}</span>
+                    <input type="checkbox" class="workshop-checkbox" name="date" data-is-waitlist="false" value="${workshop.artForm}">
+                `;
+                availableContainer.appendChild(div);
+            });
+
+            // Populate waitlist workshops dynamically if they exist
+            if (workshops.waitlistWorkshops && workshops.waitlistWorkshops.length > 0) {
+                const waitlistHeading = document.createElement('h3');
+                waitlistHeading.innerText = 'Waitlist Workshops';
+                waitlistContainer.appendChild(waitlistHeading);
+
+                workshops.waitlistWorkshops.forEach(workshop => {
+                    console.log('Waitlist Workshop date:', workshop.date);
+
+                    const readableDate = `${workshop.projectName} - ${workshop.date}, ${workshop.artForm}, ${workshop.times}`;
+                    
+                    const div = document.createElement('div');
+                    div.classList.add('workshop-item');
+                    div.innerHTML = `
+                        <span class="workshop-label">${readableDate}</span>
+                        <input type="checkbox" class="workshop-checkbox" name="date" data-is-waitlist="true" value="${workshop.artForm}">
+                    `;
+                    waitlistContainer.appendChild(div);
+                });
+
+                availableContainer.appendChild(waitlistContainer);
             }
-        });
-
-        const workshops = await response.json();
-
-        // Log the full response to see what data is being returned
-        console.log('Full response:', workshops);
-
-        const container = document.getElementById('workshop-dates-container');
-        container.innerHTML = ''; // Clear existing options
-
-        // Populate the workshops dynamically
-        workshops.forEach(workshop => {
-          console.log('Workshop date:', workshop.date);  // This will log the exact value of the date
-          
-          // Use the full date returned directly
-          const readableDate = `${workshop.projectName} - ${workshop.date}, ${workshop.artForm}, ${workshop.times}`;
-          
-          const div = document.createElement('div');
-          div.classList.add('workshop-item');
-          div.innerHTML = `
-              <span class="workshop-label">${readableDate}</span>
-              <input type="checkbox" class="workshop-checkbox" name="date" value="${workshop.artForm}">
-          `;
-          container.appendChild(div);
-        });
-      } catch (error) {
-        console.error('Error fetching workshop dates:', error);
-      }
+        } catch (error) {
+            console.error('Error fetching workshop dates:', error);
+        }
     }
-
 
     // Form submission
     document.getElementById('booking-form').addEventListener('submit', async function (event) {
         event.preventDefault(); // Prevent the default form submission
+
+        const marketingSource = document.getElementById('project_marketing').value;
+        const otherInput = document.getElementById('other_input').value || 'N/A'; // Get the "Other" value, if available
 
         const formData = {
             email: document.getElementById('email').value,
@@ -296,15 +332,18 @@
             telephone: document.getElementById('telephone').value,
             age: document.getElementById('age').value,
             organisation: document.getElementById('organisation').value || 'N/A',
-            marketingSource: document.getElementById('project_marketing').value,
-            otherInput: document.getElementById('other_input').value || 'N/A'
+            marketingSource: marketingSource === 'other' ? otherInput : marketingSource,
+            otherInput: otherInput
         };
 
         // Get selected workshop dates
         const selectedDates = Array.from(document.querySelectorAll('input[name="date"]:checked'))
-            .map(input => input.value);  // Now we use 'data-artform' which holds the correct value
+            .map(input => ({
+                date: input.value,
+                isWaitlist: input.dataset.isWaitlist === "true"  // Identify if the selected date is on the waitlist
+            }));
 
-        console.log(selectedDates);
+        console.log('Selected Dates:', selectedDates);
 
         if (selectedDates.length === 0) {
             alert('Please select at least one workshop date.');
@@ -313,8 +352,8 @@
 
         try {
             // Loop through selected workshop dates and handle Google Sheets & Email API calls
-            for (const date of selectedDates) {
-                formData.date = convertToValidDate(date);   // Use 'artForm' value for the date
+            for (const selected of selectedDates) {
+                formData.date = convertToValidDate(selected.date);
 
                 const dataToWrite = [
                     [
@@ -326,7 +365,8 @@
                         formData.age,
                         formData.organisation,
                         formData.date,  // This is now 'artForm' value being submitted
-                        formData.marketingSource
+                        formData.marketingSource,
+                        selected.isWaitlist ? 'Yes' : 'No'  // Write 'Yes' if it's a waitlist date
                     ]
                 ];
 
@@ -346,22 +386,36 @@
                 // Convert date to 'yyyy-MM-dd' for the email confirmation
                 const isoDate = convertToIsoDate(formData.date);
 
-                // Send booking confirmation email
-                const emailResponse = await fetch(`https://unifiedintegrations.azurewebsites.net/api/DaniLee/send-booking-confirmation?recipientEmail=${encodeURIComponent(formData.email)}&firstName=${encodeURIComponent(formData.firstName)}&workshopDate=${encodeURIComponent(isoDate)}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
+                // Send booking confirmation or waitlist email
+                if (selected.isWaitlist) {
+                    // Send waitlist notification email
+                    const waitlistEmailResponse = await fetch(`https://unifiedintegrations.azurewebsites.net/api/DaniLee/send-waitlist-email?recipientEmail=${encodeURIComponent(formData.email)}&firstName=${encodeURIComponent(formData.firstName)}&workshopDate=${encodeURIComponent(isoDate)}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!waitlistEmailResponse.ok) {
+                        throw new Error(`Failed to send waitlist email for ${formData.date}`);
                     }
-                });
+                } else {
+                    // Send booking confirmation email
+                    const emailResponse = await fetch(`https://unifiedintegrations.azurewebsites.net/api/DaniLee/send-booking-confirmation?recipientEmail=${encodeURIComponent(formData.email)}&firstName=${encodeURIComponent(formData.firstName)}&workshopDate=${encodeURIComponent(isoDate)}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
 
-                if (!emailResponse.ok) {
-                    throw new Error(`Failed to send confirmation for ${formData.date}`);
+                    if (!emailResponse.ok) {
+                        throw new Error(`Failed to send confirmation for ${formData.date}`);
+                    }
                 }
-
             }
 
             document.getElementById('booking-result').innerText = 'Booking successful! Thank you.';
-            // window.location.href = 'booking.html';  // Redirect after success
+            window.location.href = 'booking_confirmation.html';  // Redirect after success
 
         } catch (error) {
             console.error('Error submitting the form:', error);
@@ -387,11 +441,10 @@
         return `${year}-${month}-${day}`;  // Return in 'yyyy-MM-dd' format
     }
 
-
     document.addEventListener('DOMContentLoaded', function () {
-      // Fetch and populate the workshop dates when the page loads
-      fetchWorkshopDates();
+        // Fetch and populate the workshop dates when the page loads
+        fetchWorkshopDates();
     });
-  </script>
+</script>
 </body>
 </html>
