@@ -140,3 +140,17 @@ input:focus{
 h2.lede {
     margin-bottom: 30px;
 }
+
+.confirmation-container{
+    text-align: center;
+    max-width: 600px;
+    height: 100%;
+    margin: auto;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* .confirmation-container *{
+    align-self: center;
+} */
