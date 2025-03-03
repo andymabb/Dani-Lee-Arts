@@ -76,6 +76,7 @@
 			  <label for="telephone">Telephone:</label>
 			  <input type="text" id="telephone" name="telephone" required>
 			</div>
+
 	  
 			<div>
 			  <label for="age">Age Range:</label>
@@ -88,7 +89,7 @@
 				<option value="41-50">41-50</option>
 				<option value="51-60">51-60</option>
 				<option value="61-70">61-70</option>
-				<optionoption value="71-80">71-80</option>
+				<option value="71-80">71-80</option>
 				<option value="81+">81+</option>
 			  </select>
 			</div>
@@ -250,7 +251,6 @@
 					postcode: document.getElementById('postcode').value,
 					telephone: document.getElementById('telephone').value,
 					age: document.getElementById('age').value,
-					organisation: document.getElementById('organisation').value || 'N/A',
 					marketingSource: marketingSource === 'other' ? otherInput : marketingSource,
 					otherInput: otherInput
 				};
@@ -282,7 +282,6 @@
 								formData.postcode,
 								formData.telephone,
 								formData.age,
-								formData.organisation,
 								formData.date,  // This is now 'artForm' value being submitted
 								formData.marketingSource,
 								selected.isWaitlist ? 'Yes' : 'No'  // Write 'Yes' if it's a waitlist date
@@ -337,17 +336,6 @@
 					window.location.href = 'booking_confirmation.html';  // Redirect after success
 		
 				} catch (error) {
-					console.error('Error submitting the form:', error);
-					document.getElementById('booking-result').innerText = `Booking failed. Please try again.`;
-				}
-			});
-		
-			// Helper function to convert human-readable date (e.g., '11th November 2024') to 'dd/MM/yyyy' format
-			function convertToValidDate(dateString) {
-				const dateParts = dateString.match(/(\d+)(?:st|nd|rd|th)? (\w+) (\d{4})/);
-				if (!dateParts) return null;
-		
-				const day = dateParts[1].padStart(2, '0');  // Day with leading zero
 				const month = new Date(`${dateParts[2]} 1`).getMonth() + 1;  // Convert month name to number
 				const year = dateParts[3];
 		
