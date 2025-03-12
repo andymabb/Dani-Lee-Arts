@@ -383,20 +383,26 @@ h2.lede {
 
         // Helper function to convert human-readable date (e.g., '11th November 2024') to 'dd/MM/yyyy' format
         function convertToValidDate(dateString) {
+            // 1. Match day (with possible st/nd/rd/th), month name, and 4-digit year
             const dateParts = dateString.match(/(\d+)(?:st|nd|rd|th)? (\w+) (\d{4})/);
             if (!dateParts) return null;
 
-            const day = dateParts[1].padStart(2, '0');  // Day with leading zero
-            const month = new Date(`${dateParts[2]} 1`).getMonth() + 1;  // Convert month name to number
-            const year = dateParts[3];
+            // 2. Extract day and year
+            const day = dateParts[1].padStart(2, '0');  // e.g. '11'
+            const year = dateParts[3];                  // e.g. '2024'
 
-            return `${day}/${month.toString().padStart(2, '0')}/${year}`;  // Return in 'dd/MM/yyyy' format
+            // 3. Parse the month by including a fixed year (e.g., '2000') so Firefox doesn’t choke
+            //    Example: 'November 1, 2000' -> month = 10 (November is 10-based, then +1 = 11)
+            const month = new Date(`${dateParts[2]} 1, 2000`).getMonth() + 1;
+
+            // 4. Return in 'dd/MM/yyyy' format
+            return `${day}/${month.toString().padStart(2, '0')}/${year}`;
         }
 
-        // Helper function to convert 'dd/MM/yyyy' to 'yyyy-MM-dd' for sending in the confirmation email
+        // Helper function to convert 'dd/MM/yyyy' to 'yyyy-MM-dd' for the email
         function convertToIsoDate(dateString) {
             const [day, month, year] = dateString.split('/');
-            return `${year}-${month}-${day}`;  // Return in 'yyyy-MM-dd' format
+            return `${year}-${month}-${day}`; // e.g. '2024-11-11'
         }
 
 
