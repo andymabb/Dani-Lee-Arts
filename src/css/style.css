@@ -663,3 +663,37 @@ a.button, .audio{
 .news-page .meta{
 	font-style: italic;
 }
+
+/* Booking confirmation format */
+.confirmation-container p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: rgba(0, 0, 0, 0.85); /* Darker text for better contrast */
+}
+
+.confirmation-container h1 {
+    color: var(--primary); /* This ensures consistency with your theme */
+    font-size: 2rem; /* Increase size for better readability */
+    line-height: 1.5;
+}
+
+.confirmation-container {
+    text-align: center;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  /* Ensure items are centered */
+    grid-column: 1 / -1;  /* Ensure it spans the full grid */
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
