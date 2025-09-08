@@ -12,6 +12,9 @@ const replace = require('gulp-replace');
 const plumber = require('gulp-plumber');
 const notify = require('gulp-notify');
 const newer = require('gulp-newer');
+const { exec } = require('child_process');
+const util = require('util');
+const execAsync = util.promisify(exec);
 
 // PostCSS plugins - simplified for modern browsers
 const autoprefixer = require('autoprefixer');
@@ -38,8 +41,13 @@ const paths = {
     dest: "dist",
     watch: "src/**/*.html"
   },
+  images: {
+    src: 'src/img/**/*',
+    dest: 'dist/img/',
+    watch: 'src/img/**/*'
+  },
   static: {
-    src: ['src/**/*', '!src/**/*.html', '!src/css/**/*', '!src/js/**/*', '!src/includes/**/*'],
+    src: ['src/**/*', '!src/**/*.html', '!src/css/**/*', '!src/js/**/*', '!src/includes/**/*', '!src/img/**/*'],
     dest: 'dist'
   }
 };
@@ -153,11 +161,19 @@ function html() {
 
 exports.html = html;
 
-// Copy static files
+// Copy static files (excluding images which have their own task)
 function copyStatic() {
   return gulp.src(paths.static.src, { dot: true })
     .pipe(newer(paths.static.dest))
     .pipe(gulp.dest(paths.static.dest));
+}
+
+// Copy images - only newer files for efficiency
+function images() {
+  return gulp.src(paths.images.src)
+    .pipe(plumber({ errorHandler: onError }))
+    .pipe(newer(paths.images.dest))
+    .pipe(gulp.dest(paths.images.dest));
 }
 
 function reload(done) {
@@ -182,12 +198,13 @@ function watchFiles() {
   gulp.watch(paths.css.watch, gulp.series(css));
   gulp.watch(paths.js.watch, gulp.series(js, reload));
   gulp.watch(paths.html.watch, gulp.series(html, reload));
+  gulp.watch(paths.images.watch, gulp.series(images, reload));
 }
 
 // Task compositions
-const buildAssets = gulp.parallel(css, js, copyStatic);
+const buildAssets = gulp.parallel(css, js, images, copyStatic);
 const build = gulp.series(clean, buildAssets, html);
-const rebuild = gulp.series(gulp.parallel(css, js), html);
+const rebuild = gulp.series(gulp.parallel(css, js, images), html);
 const dev = gulp.series(build, serve, watchFiles);
 
 // Exports
@@ -195,6 +212,7 @@ exports.clean = clean;
 exports.css = css;
 exports.js = js;
 exports.html = html;
+exports.images = images;
 exports.build = build;
 exports.dev = dev;
 exports.default = dev;
@@ -206,4 +224,109 @@ exports.prod = gulp.series(
     done();
   },
   build
+);
+
+// Git automation functions
+const gitPath = '"C:\\Program Files\\Git\\bin\\git.exe"';
+
+async function gitAdd() {
+  try {
+    const { stdout, stderr } = await execAsync(`${gitPath} add .`);
+    console.log('✓ Git add completed');
+    if (stderr) console.log('Git warnings:', stderr);
+    return Promise.resolve();
+  } catch (error) {
+    console.error('Git add failed:', error.message);
+    return Promise.reject(error);
+  }
+}
+
+async function gitCommit() {
+  try {
+    // Generate automatic commit message with timestamp
+    const timestamp = new Date().toLocaleString('en-GB', { 
+      timeZone: 'Europe/London',
+      year: 'numeric',
+      month: '2-digit', 
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    
+    const commitMessage = `Auto-update: ${timestamp}
+
+- Updated source files and built assets
+- Cache-busted CSS and JS files
+- Ready for production deployment`;
+
+    const { stdout, stderr } = await execAsync(`${gitPath} commit -m "${commitMessage}"`);
+    console.log('✓ Git commit completed');
+    console.log('Commit details:', stdout);
+    if (stderr) console.log('Git warnings:', stderr);
+    return Promise.resolve();
+  } catch (error) {
+    if (error.message.includes('nothing to commit')) {
+      console.log('✓ No changes to commit - repository is up to date');
+      return Promise.resolve();
+    }
+    console.error('Git commit failed:', error.message);
+    return Promise.reject(error);
+  }
+}
+
+async function gitPush() {
+  try {
+    const { stdout, stderr } = await execAsync(`${gitPath} push`);
+    console.log('✓ Git push completed');
+    console.log('Push details:', stdout);
+    if (stderr) console.log('Git info:', stderr);
+    return Promise.resolve();
+  } catch (error) {
+    console.error('Git push failed:', error.message);
+    return Promise.reject(error);
+  }
+}
+
+// Combined deploy function
+async function deployToGitHub(done) {
+  try {
+    console.log('\n🚀 Starting deployment to GitHub...\n');
+    await gitAdd();
+    await gitCommit();
+    await gitPush();
+    console.log('\n✅ Deployment completed successfully!\n');
+    
+    notify({
+      title: 'Deployment Complete',
+      message: 'Website deployed to GitHub successfully!',
+      sound: 'Frog'
+    });
+    
+    done();
+  } catch (error) {
+    console.error('\n❌ Deployment failed:', error.message);
+    
+    notify.onError({
+      title: "Deployment Failed",
+      message: "GitHub deployment failed: <%= error.message %>"
+    })(error);
+    
+    done(error);
+  }
+}
+
+// Export git functions
+exports.gitAdd = gitAdd;
+exports.gitCommit = gitCommit;
+exports.gitPush = gitPush;
+
+// Deploy tasks
+exports.deploy = gulp.series(build, deployToGitHub);
+exports.prodDeploy = gulp.series(
+  (done) => { 
+    process.env.NODE_ENV = 'production'; 
+    done();
+  },
+  build,
+  deployToGitHub
 );
