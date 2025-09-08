@@ -201,11 +201,30 @@ function watchFiles() {
   gulp.watch(paths.images.watch, gulp.series(images, reload));
 }
 
+// Watch files and auto-deploy on changes
+function watchWithDeploy() {
+  // Debounce deployment to avoid too many commits
+  let deployTimeout;
+  const debouncedDeploy = () => {
+    clearTimeout(deployTimeout);
+    deployTimeout = setTimeout(() => {
+      console.log('\n📁 File changes detected - starting auto-deployment...\n');
+      deployToGitHub(() => {});
+    }, 5000); // Wait 5 seconds after last change
+  };
+
+  gulp.watch(paths.css.watch, gulp.series(css, (done) => { debouncedDeploy(); done(); }));
+  gulp.watch(paths.js.watch, gulp.series(js, reload, (done) => { debouncedDeploy(); done(); }));
+  gulp.watch(paths.html.watch, gulp.series(html, reload, (done) => { debouncedDeploy(); done(); }));
+  gulp.watch(paths.images.watch, gulp.series(images, reload, (done) => { debouncedDeploy(); done(); }));
+}
+
 // Task compositions
 const buildAssets = gulp.parallel(css, js, images, copyStatic);
 const build = gulp.series(clean, buildAssets, html);
 const rebuild = gulp.series(gulp.parallel(css, js, images), html);
 const dev = gulp.series(build, serve, watchFiles);
+const devWithDeploy = gulp.series(build, serve, watchWithDeploy);
 
 // Exports
 exports.clean = clean;
@@ -215,6 +234,7 @@ exports.html = html;
 exports.images = images;
 exports.build = build;
 exports.dev = dev;
+exports.devWithDeploy = devWithDeploy;
 exports.default = dev;
 
 // Production build
@@ -330,3 +350,6 @@ exports.prodDeploy = gulp.series(
   build,
   deployToGitHub
 );
+
+// Quick deploy (no build - just commit current state)
+exports.quickDeploy = deployToGitHub;
