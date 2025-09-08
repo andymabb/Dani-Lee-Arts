@@ -15,6 +15,13 @@ const newer = require('gulp-newer');
 const { exec } = require('child_process');
 const util = require('util');
 const execAsync = util.promisify(exec);
+const ftp = require('vinyl-ftp');
+
+// Load project configuration
+const config = require('./project.config.js');
+
+// Load environment variables from .env file
+require('dotenv').config({ silent: true });
 
 // PostCSS plugins - simplified for modern browsers
 const autoprefixer = require('autoprefixer');
@@ -23,34 +30,8 @@ const cssnano = require('cssnano');
 
 const server = browserSync.create();
 
-// Enhanced paths configuration
-const paths = {
-  js: {
-    src: 'src/js/**/*.js',
-    dest: 'dist/js/',
-    watch: 'src/js/**/*.js'
-  },
-  css: {
-    src: 'src/css/style.css',
-    dest: 'dist/css/',
-    watch: 'src/css/**/*.css'
-  },
-  html: {
-    src: "src/*.html",
-    includes: "src/includes/**/*.html",
-    dest: "dist",
-    watch: "src/**/*.html"
-  },
-  images: {
-    src: 'src/img/**/*',
-    dest: 'dist/img/',
-    watch: 'src/img/**/*'
-  },
-  static: {
-    src: ['src/**/*', '!src/**/*.html', '!src/css/**/*', '!src/js/**/*', '!src/includes/**/*', '!src/img/**/*'],
-    dest: 'dist'
-  }
-};
+// Use paths from configuration
+const paths = config.paths;
 
 // Error handling
 const onError = (err) => {
@@ -185,10 +166,11 @@ function reload(done) {
 function serve(done) {
   server.init({
     server: {
-      baseDir: "./dist"
+      baseDir: config.server.baseDir
     },
-    notify: false,
-    open: false // Don't auto-open browser
+    port: config.server.port,
+    notify: config.server.notify,
+    open: config.server.open
   });
   done();
 }
@@ -210,7 +192,7 @@ function watchWithDeploy() {
     deployTimeout = setTimeout(() => {
       console.log('\n📁 File changes detected - starting auto-deployment...\n');
       deployToGitHub(() => {});
-    }, 5000); // Wait 5 seconds after last change
+    }, config.build.autoDeploy.debounceTime);
   };
 
   gulp.watch(paths.css.watch, gulp.series(css, (done) => { debouncedDeploy(); done(); }));
@@ -247,7 +229,7 @@ exports.prod = gulp.series(
 );
 
 // Git automation functions
-const gitPath = '"C:\\Program Files\\Git\\bin\\git.exe"';
+const gitPath = config.github.gitPath;
 
 async function gitAdd() {
   try {
@@ -263,17 +245,18 @@ async function gitAdd() {
 
 async function gitCommit() {
   try {
-    // Generate automatic commit message with timestamp
-    const timestamp = new Date().toLocaleString('en-GB', { 
-      timeZone: 'Europe/London',
-      year: 'numeric',
-      month: '2-digit', 
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    // Generate automatic commit message with timestamp from config
+    const timestamp = config.build.autoDeploy.commitMessage.includeTimestamp ? 
+      new Date().toLocaleString('en-GB', { 
+        timeZone: config.build.autoDeploy.commitMessage.timezone,
+        year: 'numeric',
+        month: '2-digit', 
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      }) : '';
     
-    const commitMessage = `Auto-update: ${timestamp}
+    const commitMessage = `${config.build.autoDeploy.commitMessage.prefix}${timestamp ? ': ' + timestamp : ''}
 
 - Updated source files and built assets
 - Cache-busted CSS and JS files
@@ -353,3 +336,86 @@ exports.prodDeploy = gulp.series(
 
 // Quick deploy (no build - just commit current state)
 exports.quickDeploy = deployToGitHub;
+
+// FTP Deployment Functions
+function createFtpConnection() {
+  if (!config.ftp.enabled) {
+    throw new Error('FTP is disabled in project.config.js. Set ftp.enabled to true to use FTP deployment.');
+  }
+  
+  return ftp.create({
+    host: config.ftp.host,
+    user: config.ftp.user,
+    password: config.ftp.password,
+    parallel: config.ftp.parallel,
+    log: config.ftp.log ? console.log : undefined
+  });
+}
+
+function deployToFtp() {
+  const conn = createFtpConnection();
+  
+  console.log(`\n📡 Deploying to FTP server: ${config.ftp.host}\n`);
+  
+  return gulp.src('dist/**/*', { base: 'dist', buffer: false })
+    .pipe(plumber({ errorHandler: onError }))
+    .pipe(conn.dest(config.ftp.remotePath))
+    .pipe(notify({
+      title: 'FTP Deployment Complete',
+      message: `Website deployed to ${config.ftp.host}`,
+      sound: 'Glass'
+    }));
+}
+
+function deployToFtpClean() {
+  const conn = createFtpConnection();
+  
+  console.log(`\n🧹 Cleaning FTP directory: ${config.ftp.remotePath}\n`);
+  
+  return conn.clean(config.ftp.remotePath + '**', 'dist');
+}
+
+// Combined FTP and GitHub deployment
+async function deployEverywhere(done) {
+  try {
+    console.log('\n🚀 Starting full deployment (GitHub + FTP)...\n');
+    
+    // First deploy to GitHub
+    await gitAdd();
+    await gitCommit();
+    await gitPush();
+    console.log('✅ GitHub deployment completed');
+    
+    // Then deploy to FTP if enabled
+    if (config.ftp.enabled) {
+      console.log('\n📡 Starting FTP deployment...\n');
+      await new Promise((resolve, reject) => {
+        deployToFtp()
+          .on('end', resolve)
+          .on('error', reject);
+      });
+      console.log('✅ FTP deployment completed');
+    } else {
+      console.log('ℹ️  FTP deployment skipped (disabled in config)');
+    }
+    
+    console.log('\n🎉 All deployments completed successfully!\n');
+    done();
+  } catch (error) {
+    console.error('\n❌ Deployment failed:', error.message);
+    done(error);
+  }
+}
+
+// Export FTP functions
+exports.ftpDeploy = deployToFtp;
+exports.ftpClean = deployToFtpClean;
+exports.deployAll = gulp.series(build, deployEverywhere);
+exports.prodDeployAll = gulp.series(
+  (done) => { 
+    process.env.NODE_ENV = 'production'; 
+    done();
+  },
+  build,
+  deployEverywhere
+);
