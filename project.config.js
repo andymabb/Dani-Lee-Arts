@@ -14,31 +14,6 @@ module.exports = {
     gitPath: '"C:\\Program Files\\Git\\bin\\git.exe"'
   },
   
-  // FTP Configuration
-  // For security, sensitive values can be environment variables
-  ftp: {
-    enabled: true, // Set to true to enable FTP deployment
-    host: process.env.FTP_HOST || 'ftp.pontbren.com',
-    user: process.env.FTP_USER || 'u1174',
-    password: process.env.FTP_PASS || '^ru{6Hao0BBt',
-    remotePath: process.env.FTP_REMOTE_PATH || '/public_html/',
-    parallel: 5, // Number of parallel uploads
-    log: true, // Set to false to disable FTP logging
-    
-    // Deployment strategy options
-    strategy: {
-      // Force upload these file types (always overwrite)
-      forceUpload: ['**/*.html', '**/*.css', '**/*.js', '**/*.map'],
-      
-      // Smart upload these (only if newer than remote)
-      smartUpload: ['**/*.jpg', '**/*.jpeg', '**/*.png', '**/*.gif', '**/*.webp', '**/*.avif', 
-                   '**/*.svg', '**/*.ico', '**/*.pdf', '**/*.mp3', '**/*.mp4', '**/*.zip'],
-      
-      // Clean remote directory before upload (dangerous!)
-      cleanBeforeUpload: false
-    }
-  },
-  
   // Build Configuration
   build: {
     // Browser targets (reads from .browserslistrc if present)

@@ -16,6 +16,7 @@ const { exec } = require('child_process');
 const util = require('util');
 const execAsync = util.promisify(exec);
 
+
 // Load project configuration
 const config = require('./project.config.js');
 
@@ -335,3 +336,282 @@ exports.prodDeploy = gulp.series(
 
 // Quick deploy (no build - just commit current state)
 exports.quickDeploy = deployToGitHub;
+
+
+
+
+
+// Smart FTP deployment - only uploads newer files
+function deployToFtpSmart() {
+  const conn = createFtpConnection();
+  
+  console.log(`\n📡 Smart FTP deployment to: ${config.ftp.host}\n`);
+  console.log('🔍 Checking for newer files...\n');
+  
+  return gulp.src('dist/**/*', { base: 'dist', buffer: false })
+    .pipe(plumber({ errorHandler: onError }))
+    .pipe(conn.newer(config.ftp.remotePath)) // Only upload if newer than remote
+    .pipe(conn.dest(config.ftp.remotePath))
+    .pipe(notify({
+      title: 'Smart FTP Deployment Complete',
+      message: `Only newer files uploaded to ${config.ftp.host}`,
+      sound: 'Glass'
+    }));
+}
+
+// Force upload specific file types (HTML, CSS, JS always get updated)
+function deployToFtpSelective() {
+  const conn = createFtpConnection();
+  
+  console.log(`\n📡 Selective FTP deployment to: ${config.ftp.host}\n`);
+  console.log('📤 HTML/CSS/JS: Always uploaded (cache-busted)');
+  console.log('�️  Images/Assets: Only if newer than server\n');
+  
+  // Upload all files, let vinyl-ftp handle the checking
+  return gulp.src('dist/**/*', { base: 'dist', buffer: false })
+    .pipe(plumber({ errorHandler: onError }))
+    .pipe(conn.newer(config.ftp.remotePath)) // Only upload if newer
+    .pipe(conn.dest(config.ftp.remotePath))
+    .pipe(notify({
+      title: 'Selective FTP Deployment Complete', 
+      message: `Smart upload completed to ${config.ftp.host}`,
+      sound: 'Glass'
+    }));
+}
+
+function deployToFtpClean() {
+  const conn = createFtpConnection();
+  
+  console.log(`\n🧹 Cleaning FTP directory: ${config.ftp.remotePath}\n`);
+  
+  return conn.clean(config.ftp.remotePath + '**', 'dist');
+}
+
+// Combined FTP and GitHub deployment
+async function deployEverywhere(done) {
+  try {
+    console.log('\n🚀 Starting full deployment (GitHub + FTP)...\n');
+    
+    // First deploy to GitHub
+    await gitAdd();
+    await gitCommit();
+    await gitPush();
+    console.log('✅ GitHub deployment completed');
+    
+    // Then deploy to FTP if enabled
+    if (config.ftp.enabled) {
+      console.log('\n📡 Starting selective FTP deployment...\n');
+      await new Promise((resolve, reject) => {
+        deployToFtpSelective()
+          .on('end', resolve)
+          .on('error', reject);
+      });
+      console.log('✅ FTP deployment completed');
+    } else {
+      console.log('ℹ️  FTP deployment skipped (disabled in config)');
+    }
+    
+    console.log('\n🎉 All deployments completed successfully!\n');
+    done();
+  } catch (error) {
+    console.error('\n❌ Deployment failed:', error.message);
+    done(error);
+  }
+}
+
+// Simple FTP connection test
+function testFtpConnection(done) {
+  try {
+    const conn = createFtpConnection();
+    
+    console.log('\n🧪 Testing FTP connection...\n');
+    
+    // Simple test - try to list the remote directory
+    return gulp.src('dist/*.html', { read: false })
+      .pipe(plumber({ 
+        errorHandler: function(err) {
+          console.error('❌ FTP Connection failed:', err.message);
+          if (err.message.includes('Login authentication failed')) {
+            console.log('\n💡 Troubleshooting tips:');
+            console.log('1. Check your FTP credentials in .env file');
+            console.log('2. Verify FTP server allows connections from your IP');
+            console.log('3. Try connecting with an FTP client (FileZilla) first');
+            console.log('4. Check if server requires FTPS/SFTP instead of FTP');
+          }
+          done(err);
+        }
+      }))
+      .pipe(conn.dest(config.ftp.remotePath))
+      .on('end', () => {
+        console.log('✅ FTP connection successful!');
+        done();
+      });
+      
+  } catch (error) {
+    console.error('❌ FTP setup error:', error.message);
+    done(error);
+  }
+}
+
+// Test actual file upload with single file
+function testFtpUpload(done) {
+  try {
+    const conn = createFtpConnection();
+    
+    console.log('\n📤 Testing single file upload...\n');
+    
+    // Try to upload just one HTML file
+    return gulp.src('dist/index.html', { base: 'dist' })
+      .pipe(plumber({ 
+        errorHandler: function(err) {
+          console.error('❌ FTP Upload failed:', err.message);
+          done(err);
+        }
+      }))
+      .pipe(conn.dest(config.ftp.remotePath))
+      .on('end', () => {
+        console.log('✅ Single file upload successful!');
+        done();
+      });
+      
+  } catch (error) {
+    console.error('❌ FTP setup error:', error.message);
+    done(error);
+  }
+}
+
+// Debug FTP Configuration
+function debugFtpConfig(done) {
+  console.log('\n🔍 FTP Configuration Debug:\n');
+  console.log('Environment variables:');
+  console.log('FTP_HOST:', process.env.FTP_HOST);
+  console.log('FTP_USER:', process.env.FTP_USER);
+  console.log('FTP_PASS:', process.env.FTP_PASS ? `[${process.env.FTP_PASS.length} chars]` : '[NOT SET]');
+  console.log('FTP_REMOTE_PATH:', process.env.FTP_REMOTE_PATH);
+  
+  console.log('\nConfig object values:');
+  console.log('config.ftp.host:', config.ftp.host);
+  console.log('config.ftp.user:', config.ftp.user);
+  console.log('config.ftp.password:', config.ftp.password ? `[${config.ftp.password.length} chars]` : '[NOT SET]');
+  console.log('config.ftp.remotePath:', config.ftp.remotePath);
+  console.log('config.ftp.enabled:', config.ftp.enabled);
+  
+  done();
+}
+
+// Basic FTP test using different library
+async function testBasicFtp(done) {
+  const client = new Client();
+  client.ftp.verbose = true; // Enable logging
+  
+  try {
+    console.log('\n🔬 Testing with basic-ftp library...\n');
+    console.log(`Connecting to ${config.ftp.host}...`);
+    
+    await client.access({
+      host: config.ftp.host,
+      user: config.ftp.user,
+      password: config.ftp.password,
+      secure: false
+    });
+    
+    console.log('✅ Connected successfully!');
+    
+    // Try to change to the remote directory
+    await client.cd(config.ftp.remotePath);
+    console.log(`✅ Changed to directory: ${config.ftp.remotePath}`);
+    
+    // List directory contents
+    const list = await client.list();
+    console.log(`✅ Directory listing (${list.length} items):`);
+    list.slice(0, 5).forEach(item => {
+      console.log(`  ${item.type === 1 ? 'FILE' : 'DIR'}: ${item.name}`);
+    });
+    
+    client.close();
+    console.log('✅ Basic FTP test completed successfully!\n');
+    done();
+    
+  } catch (err) {
+    console.error('❌ Basic FTP test failed:', err.message);
+    client.close();
+    done(err);
+  }
+}
+
+// Basic FTP file upload test  
+async function testBasicFtpUpload(done) {
+  const client = new Client();
+  
+  try {
+    console.log('\n📤 Testing file upload with basic-ftp...\n');
+    
+    await client.access({
+      host: config.ftp.host,
+      user: config.ftp.user,
+      password: config.ftp.password,
+      secure: false
+    });
+    
+    await client.cd(config.ftp.remotePath);
+    
+    // Upload index.html
+    const localFile = 'dist/index.html';
+    if (fs.existsSync(localFile)) {
+      await client.uploadFrom(localFile, 'index.html');
+      console.log('✅ File uploaded successfully!');
+    } else {
+      console.log('❌ Local file not found:', localFile);
+    }
+    
+    client.close();
+    done();
+    
+  } catch (err) {
+    console.error('❌ Basic FTP upload failed:', err.message);
+    client.close();
+    done(err);
+  }
+}
+
+// Test SFTP connection
+function testSftpConnection() {
+  console.log('\n🔬 Testing SFTP connection...\n');
+  
+  return gulp.src('dist/index.html')
+    .pipe(plumber({ errorHandler: onError }))
+    .pipe(sftp({
+      host: config.ftp.host,
+      user: config.ftp.user,
+      pass: config.ftp.password,
+      remotePath: config.ftp.remotePath,
+      // Try port 22 for SFTP
+      port: 22
+    }))
+    .pipe(notify({
+      title: 'SFTP Test Complete',
+      message: 'SFTP connection test finished',
+      sound: 'Glass'
+    }));
+}
+
+// Export FTP functions
+exports.ftpDebug = debugFtpConfig;             // Debug FTP configuration
+exports.ftpTest = testFtpConnection;           // Test FTP connection (vinyl-ftp)
+exports.ftpUploadTest = testFtpUpload;         // Test single file upload (vinyl-ftp)
+exports.ftpBasicTest = testBasicFtp;           // Test with basic-ftp library
+exports.ftpBasicUpload = testBasicFtpUpload;   // Upload with basic-ftp library
+exports.sftpTest = testSftpConnection;         // Test SFTP connection
+exports.ftpDeploy = deployToFtp;               // Upload all files
+exports.ftpSmart = deployToFtpSmart;           // Only upload newer files
+exports.ftpSelective = deployToFtpSelective;   // Force HTML/CSS/JS, smart images/assets
+exports.ftpClean = deployToFtpClean;
+exports.deployAll = gulp.series(build, deployEverywhere);
+exports.prodDeployAll = gulp.series(
+  (done) => { 
+    process.env.NODE_ENV = 'production'; 
+    done();
+  },
+  build,
+  deployEverywhere
+);
