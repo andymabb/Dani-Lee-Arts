@@ -17,10 +17,10 @@ module.exports = {
   // FTP Configuration
   // For security, sensitive values can be environment variables
   ftp: {
-    enabled: false, // Set to true to enable FTP deployment
-    host: process.env.FTP_HOST || 'your-ftp-host.com',
-    user: process.env.FTP_USER || 'your-username',
-    password: process.env.FTP_PASS || 'your-password',
+    enabled: true, // Set to true to enable FTP deployment
+    host: process.env.FTP_HOST || 'ftp.pontbren.com',
+    user: process.env.FTP_USER || 'u1174',
+    password: process.env.FTP_PASS || '^ru{6Hao0BBt',
     remotePath: process.env.FTP_REMOTE_PATH || '/public_html/',
     parallel: 5, // Number of parallel uploads
     log: true, // Set to false to disable FTP logging

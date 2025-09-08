@@ -34,7 +34,7 @@ const server = browserSync.create();
 const paths = config.paths;
 
 // Error handling
-const onError = (err) => {
+const onError = function(err) {
   notify.onError({
     title: "Gulp Error",
     message: "Error: <%= error.message %>"
@@ -343,12 +343,20 @@ function createFtpConnection() {
     throw new Error('FTP is disabled in project.config.js. Set ftp.enabled to true to use FTP deployment.');
   }
   
+  console.log(`🔗 Connecting to FTP server: ${config.ftp.host}`);
+  console.log(`👤 User: ${config.ftp.user}`);
+  console.log(`📁 Remote path: ${config.ftp.remotePath}`);
+  
   return ftp.create({
     host: config.ftp.host,
     user: config.ftp.user,
     password: config.ftp.password,
-    parallel: config.ftp.parallel,
-    log: config.ftp.log ? console.log : undefined
+    parallel: 1, // Reduce to 1 to avoid multiple connections
+    log: config.ftp.log ? console.log : undefined,
+    // Additional connection options
+    connTimeout: 60000, // 60 seconds
+    pasvTimeout: 60000, // 60 seconds  
+    keepalive: 60000   // 60 seconds
   });
 }
 
@@ -390,33 +398,17 @@ function deployToFtpSelective() {
   const conn = createFtpConnection();
   
   console.log(`\n📡 Selective FTP deployment to: ${config.ftp.host}\n`);
+  console.log('📤 HTML/CSS/JS: Always uploaded (cache-busted)');
+  console.log('�️  Images/Assets: Only if newer than server\n');
   
-  // Always upload HTML, CSS, JS (they have cache-busting names)
-  const forceUpload = gulp.src([
-    'dist/**/*.html',
-    'dist/**/*.css',
-    'dist/**/*.js',
-    'dist/**/*.map'
-  ], { base: 'dist', buffer: false })
+  // Upload all files, let vinyl-ftp handle the checking
+  return gulp.src('dist/**/*', { base: 'dist', buffer: false })
     .pipe(plumber({ errorHandler: onError }))
-    .pipe(conn.dest(config.ftp.remotePath));
-  
-  // Only upload newer images and other assets
-  const smartUpload = gulp.src([
-    'dist/**/*',
-    '!dist/**/*.html',
-    '!dist/**/*.css', 
-    '!dist/**/*.js',
-    '!dist/**/*.map'
-  ], { base: 'dist', buffer: false })
-    .pipe(plumber({ errorHandler: onError }))
-    .pipe(conn.newer(config.ftp.remotePath)) // Only if newer
-    .pipe(conn.dest(config.ftp.remotePath));
-  
-  return require('merge-stream')(forceUpload, smartUpload)
+    .pipe(conn.newer(config.ftp.remotePath)) // Only upload if newer
+    .pipe(conn.dest(config.ftp.remotePath))
     .pipe(notify({
       title: 'Selective FTP Deployment Complete', 
-      message: `HTML/CSS/JS forced, images/assets only if newer`,
+      message: `Smart upload completed to ${config.ftp.host}`,
       sound: 'Glass'
     }));
 }
@@ -461,7 +453,62 @@ async function deployEverywhere(done) {
   }
 }
 
+// Simple FTP connection test
+function testFtpConnection(done) {
+  try {
+    const conn = createFtpConnection();
+    
+    console.log('\n🧪 Testing FTP connection...\n');
+    
+    // Simple test - try to list the remote directory
+    return gulp.src('dist/*.html', { read: false })
+      .pipe(plumber({ 
+        errorHandler: function(err) {
+          console.error('❌ FTP Connection failed:', err.message);
+          if (err.message.includes('Login authentication failed')) {
+            console.log('\n💡 Troubleshooting tips:');
+            console.log('1. Check your FTP credentials in .env file');
+            console.log('2. Verify FTP server allows connections from your IP');
+            console.log('3. Try connecting with an FTP client (FileZilla) first');
+            console.log('4. Check if server requires FTPS/SFTP instead of FTP');
+          }
+          done(err);
+        }
+      }))
+      .pipe(conn.dest(config.ftp.remotePath))
+      .on('end', () => {
+        console.log('✅ FTP connection successful!');
+        done();
+      });
+      
+  } catch (error) {
+    console.error('❌ FTP setup error:', error.message);
+    done(error);
+  }
+}
+
+// Debug FTP Configuration
+function debugFtpConfig(done) {
+  console.log('\n🔍 FTP Configuration Debug:\n');
+  console.log('Environment variables:');
+  console.log('FTP_HOST:', process.env.FTP_HOST);
+  console.log('FTP_USER:', process.env.FTP_USER);
+  console.log('FTP_PASS:', process.env.FTP_PASS ? `[${process.env.FTP_PASS.length} chars]` : '[NOT SET]');
+  console.log('FTP_REMOTE_PATH:', process.env.FTP_REMOTE_PATH);
+  
+  console.log('\nConfig object values:');
+  console.log('config.ftp.host:', config.ftp.host);
+  console.log('config.ftp.user:', config.ftp.user);
+  console.log('config.ftp.password:', config.ftp.password ? `[${config.ftp.password.length} chars]` : '[NOT SET]');
+  console.log('config.ftp.remotePath:', config.ftp.remotePath);
+  console.log('config.ftp.enabled:', config.ftp.enabled);
+  
+  done();
+}
+
 // Export FTP functions
+exports.ftpDebug = debugFtpConfig;             // Debug FTP configuration
+exports.ftpTest = testFtpConnection;           // Test FTP connection
 exports.ftpDeploy = deployToFtp;               // Upload all files
 exports.ftpSmart = deployToFtpSmart;           // Only upload newer files
 exports.ftpSelective = deployToFtpSelective;   // Force HTML/CSS/JS, smart images/assets
