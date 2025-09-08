@@ -29,7 +29,9 @@ FTP_REMOTE_PATH=/public_html/
 - `gulp quickDeploy` - Instant GitHub deploy (no build)
 
 ### FTP Only  
-- `gulp ftpDeploy` - Deploy dist/ folder to FTP server
+- `gulp ftpDeploy` - Deploy all files to FTP server (overwrites everything)
+- `gulp ftpSmart` - Only upload files newer than remote server
+- `gulp ftpSelective` - **RECOMMENDED** - Force HTML/CSS/JS, smart images/assets
 - `gulp ftpClean` - Clean FTP directory before deploy
 
 ### Combined Deployment
@@ -127,7 +129,32 @@ autoDeploy: {
 }
 ```
 
-## 🔒 Security
+## � FTP Deployment Strategies
+
+### `gulp ftpSelective` ⭐ **RECOMMENDED**
+- **HTML/CSS/JS files**: Always uploaded (they have cache-busting names)
+- **Images/Media files**: Only uploaded if newer than server version
+- **Best for**: Regular updates - fast and efficient
+
+### `gulp ftpSmart`
+- **All files**: Only uploaded if newer than server version  
+- **Best for**: Initial deployment or major changes
+
+### `gulp ftpDeploy`
+- **All files**: Always uploaded (overwrites everything)
+- **Best for**: Force refresh or troubleshooting
+
+### File Type Handling
+```javascript
+// Always uploaded (cache-busted):
+*.html, *.css, *.js, *.map
+
+// Only if newer:
+*.jpg, *.jpeg, *.png, *.gif, *.webp, *.avif, 
+*.svg, *.ico, *.pdf, *.mp3, *.mp4, *.zip
+```
+
+## �🔒 Security
 
 - ✅ `.env` file is in `.gitignore` 
 - ✅ FTP credentials are environment variables

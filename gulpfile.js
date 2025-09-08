@@ -367,6 +367,60 @@ function deployToFtp() {
     }));
 }
 
+// Smart FTP deployment - only uploads newer files
+function deployToFtpSmart() {
+  const conn = createFtpConnection();
+  
+  console.log(`\n📡 Smart FTP deployment to: ${config.ftp.host}\n`);
+  console.log('🔍 Checking for newer files...\n');
+  
+  return gulp.src('dist/**/*', { base: 'dist', buffer: false })
+    .pipe(plumber({ errorHandler: onError }))
+    .pipe(conn.newer(config.ftp.remotePath)) // Only upload if newer than remote
+    .pipe(conn.dest(config.ftp.remotePath))
+    .pipe(notify({
+      title: 'Smart FTP Deployment Complete',
+      message: `Only newer files uploaded to ${config.ftp.host}`,
+      sound: 'Glass'
+    }));
+}
+
+// Force upload specific file types (HTML, CSS, JS always get updated)
+function deployToFtpSelective() {
+  const conn = createFtpConnection();
+  
+  console.log(`\n📡 Selective FTP deployment to: ${config.ftp.host}\n`);
+  
+  // Always upload HTML, CSS, JS (they have cache-busting names)
+  const forceUpload = gulp.src([
+    'dist/**/*.html',
+    'dist/**/*.css',
+    'dist/**/*.js',
+    'dist/**/*.map'
+  ], { base: 'dist', buffer: false })
+    .pipe(plumber({ errorHandler: onError }))
+    .pipe(conn.dest(config.ftp.remotePath));
+  
+  // Only upload newer images and other assets
+  const smartUpload = gulp.src([
+    'dist/**/*',
+    '!dist/**/*.html',
+    '!dist/**/*.css', 
+    '!dist/**/*.js',
+    '!dist/**/*.map'
+  ], { base: 'dist', buffer: false })
+    .pipe(plumber({ errorHandler: onError }))
+    .pipe(conn.newer(config.ftp.remotePath)) // Only if newer
+    .pipe(conn.dest(config.ftp.remotePath));
+  
+  return require('merge-stream')(forceUpload, smartUpload)
+    .pipe(notify({
+      title: 'Selective FTP Deployment Complete', 
+      message: `HTML/CSS/JS forced, images/assets only if newer`,
+      sound: 'Glass'
+    }));
+}
+
 function deployToFtpClean() {
   const conn = createFtpConnection();
   
@@ -388,9 +442,9 @@ async function deployEverywhere(done) {
     
     // Then deploy to FTP if enabled
     if (config.ftp.enabled) {
-      console.log('\n📡 Starting FTP deployment...\n');
+      console.log('\n📡 Starting selective FTP deployment...\n');
       await new Promise((resolve, reject) => {
-        deployToFtp()
+        deployToFtpSelective()
           .on('end', resolve)
           .on('error', reject);
       });
@@ -408,7 +462,9 @@ async function deployEverywhere(done) {
 }
 
 // Export FTP functions
-exports.ftpDeploy = deployToFtp;
+exports.ftpDeploy = deployToFtp;               // Upload all files
+exports.ftpSmart = deployToFtpSmart;           // Only upload newer files
+exports.ftpSelective = deployToFtpSelective;   // Force HTML/CSS/JS, smart images/assets
 exports.ftpClean = deployToFtpClean;
 exports.deployAll = gulp.series(build, deployEverywhere);
 exports.prodDeployAll = gulp.series(

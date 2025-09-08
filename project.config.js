@@ -23,7 +23,20 @@ module.exports = {
     password: process.env.FTP_PASS || 'your-password',
     remotePath: process.env.FTP_REMOTE_PATH || '/public_html/',
     parallel: 5, // Number of parallel uploads
-    log: true // Set to false to disable FTP logging
+    log: true, // Set to false to disable FTP logging
+    
+    // Deployment strategy options
+    strategy: {
+      // Force upload these file types (always overwrite)
+      forceUpload: ['**/*.html', '**/*.css', '**/*.js', '**/*.map'],
+      
+      // Smart upload these (only if newer than remote)
+      smartUpload: ['**/*.jpg', '**/*.jpeg', '**/*.png', '**/*.gif', '**/*.webp', '**/*.avif', 
+                   '**/*.svg', '**/*.ico', '**/*.pdf', '**/*.mp3', '**/*.mp4', '**/*.zip'],
+      
+      // Clean remote directory before upload (dangerous!)
+      cleanBeforeUpload: false
+    }
   },
   
   // Build Configuration
