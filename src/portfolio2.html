@@ -12,10 +12,6 @@
 <link rel="icon" type="image/png" sizes="16x16" href="img/favicons/favicon-16x16.png">
 <link rel="manifest" href="img/favicons/site.webmanifest">
 
-
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/default-skin/default-skin.min.css">
 <link href="css/style.css" rel="stylesheet">
 
 </head>
@@ -30,32 +26,17 @@
 		<a href="mailto:dani@danileearts.co.uk">dani@danileearts.co.uk</a>
 	</div>
 </div>
-<header class="header">
-	<a href="./" class="hgroup">
-		<picture>
-			<source type='image/avif' srcset='img/dani-lee.avif'>
-			<img src='img/dani-lee.png' width='394' height='89' alt='Dani Lee Arts'>
-		</picture>
-	</a>
-	
-	<ul class="mainnav nav">
-		<li><a href="./">Home</a></li>
-		<li class="active"><a href="portfolio.html">Portfolio</a></li>
-		<li><a href="about.html">About</a></li>
-        <li><a href="news.html">News</a></li>
-		<li><a href="booking.html">Booking</a></li>
-	</ul>
-</header>
+@@include('includes/header.html')
 
 <main class="main" id="main">
 
 	<ul class="page-links">
-		<li><a href="portfolio.html">1</a></li>
-		<li class="active"><a href="portfolio2.html">2</a></li>
+		<li><a href="portfolio1.html">1</a></li>
+		<li><a href="portfolio2.html">2</a></li>
 		<li><a href="portfolio3.html">3</a></li>
 	</ul>
 
-	<article class="project" id="p1-3">
+	<article class="project" id="school-garden-mosaic">
 		<h2>School Garden Mosaic</h2>
 		<picture>
 			<source type='image/avif' srcset='img/portfolio/main-images/ffair-mos.avif'>
@@ -66,9 +47,9 @@
 
 		<p>Mosaic mural created by the children, their parents and teachers for their school vegetable garden.</p>
 		<small class="click">Click below for full images</small>
-		<ul class="gallery square" data-pswp>
+		<ul class="gallery square">
 			<li>
-				<a href="img/portfolio/ffair-mos/ffair-mos-2.jpg" data-caption="">
+				<a href="img/portfolio/ffair-mos/ffair-mos-2.jpg">
 					<img src="img/portfolio/ffair-mos/thumbs/ffair-mos-2.jpg"
 						alt="Creation of a Mosaic mural on stone wall depicting a pumpkin, strawberry, butterfly and sunflower"
 						class="pull-down" loading="lazy">
@@ -76,17 +57,17 @@
 			</li>
 			<li>
 				<a href="img/portfolio/ffair-mos/ffair-mos-3.jpg">
-					<img src="img/portfolio/ffair-mos/thumbs/ffair-mos-3.jpg" alt="" class="pull-up" loading="lazy">
+					<img src="img/portfolio/ffair-mos/thumbs/ffair-mos-3.jpg" alt="A child working on a mosaic butterfly piece." class="pull-up" loading="lazy" width="500" height="473">
 				</a>
 			</li>
 			<li>
 				<a href="img/portfolio/ffair-mos/ffair-mos-4.jpg">
-					<img src="img/portfolio/ffair-mos/thumbs/ffair-mos-4.jpg" alt="" loading="lazy">
+					<img src="img/portfolio/ffair-mos/thumbs/ffair-mos-4.jpg" alt="Close-up of a mosaic snail on the mural." loading="lazy" width="500" height="455">
 				</a>
 			</li>
 			<li>
 				<a href="img/portfolio/ffair-mos/ffair-mos-5.jpg">
-					<img src="img/portfolio/ffair-mos/thumbs/ffair-mos-5.jpg" alt="" loading="lazy">
+					<img src="img/portfolio/ffair-mos/thumbs/ffair-mos-5.jpg" alt="Detail of a mosaic sunflower." loading="lazy" width="500" height="375">
 				</a>
 			</li>
 		</ul>
@@ -96,13 +77,13 @@
 		</blockquote>
 
 		<ul>
-			<li>Location - Ysgol Ffairfach, Llandeilo</li>
-			<li>Funder – Breathing Places by The National Lottery</li>
+			<li>Location - Ysgol Ffairfach, Ffairfach, Llandeilo</li>
 			<li>Partner – Gardd Y Plant Kindergarden</li>
+			<li>Funded by – The National Lottery Breathing Places</li>
 		</ul>
 	</article>
 	
-	<article class="project" id="p2-2"><!-- p5 -->
+	<article class="project" id="cob-buildings"><!-- p5 -->
 		<h2>Cob Buildings</h2>
 		<picture>
 			<source type='image/avif' srcset='img/portfolio/main-images/haver-cob.avif'>
@@ -110,25 +91,25 @@
 		</picture>
 		<p>The children made cob sculptures of the historic buildings around Haverfordwest. Cob is a fun and sticky mixture of sub-soil, sand, straw and water and is also a traditional building material.</p>
         <small class="click">Click below for full images</small>
-		<ul class="gallery square" data-pswp>
+		<ul class="gallery square">
 	        <li>
-                <a href="img/portfolio/haver-cob/haver-cob-2.jpg" data-caption="">
-                    <img src="img/portfolio/haver-cob/thumbs/haver-cob-2.jpg" alt="" loading="lazy" class="pull-down">
+                <a href="img/portfolio/haver-cob/haver-cob-2.jpg">
+                    <img src="img/portfolio/haver-cob/thumbs/haver-cob-2.jpg" alt="Children mixing cob material with their feet in a tarp." loading="lazy" class="pull-down" width="500" height="333">
                 </a>
             </li>
     		<li>
         		<a href="img/portfolio/haver-cob/haver-cob-3.jpg">
-            		<img src="img/portfolio/haver-cob/thumbs/haver-cob-3.jpg" alt="" loading="lazy">
+            		<img src="img/portfolio/haver-cob/thumbs/haver-cob-3.jpg" alt="Children mixing cob material with their hands." loading="lazy" width="500" height="375">
         		</a>
     		</li>
     		<li>
         		<a href="img/portfolio/haver-cob/haver-cob-4.jpg">
-            		<img src="img/portfolio/haver-cob/thumbs/haver-cob-4.jpg" alt="" loading="lazy">
+            		<img src="img/portfolio/haver-cob/thumbs/haver-cob-4.jpg" alt="A child shaping a small building out of cob." loading="lazy" width="500" height="375">
         		</a>
     		</li>
     		<li>
         		<a href="img/portfolio/haver-cob/haver-cob-5.jpg">
-            		<img src="img/portfolio/haver-cob/thumbs/haver-cob-5.jpg" alt="" loading="lazy">
+            		<img src="img/portfolio/haver-cob/thumbs/haver-cob-5.jpg" alt="A collection of finished cob building sculptures." loading="lazy" width="500" height="375">
         		</a>
     		</li>
     	</ul>
@@ -138,11 +119,11 @@
 		</blockquote>
 		<ul>
 			<li>Where – Waldo Williams Primary School, Haverfordwest</li>
-			<li>Funder – Tywi Centre</li>
+			<li>Funded by – Tywi Centre</li>
 		</ul>
 	</article>
 
-	<article class="project" id="p2-1"><!-- p4 -->
+	<article class="project" id="memorial-mosaic">
 		<h2>Memorial Mosaic</h2>
 		<picture>
 			<source type='image/avif' srcset='img/portfolio/main-images/cardiff-mos.avif'>
@@ -150,82 +131,46 @@
 		</picture>
 		
 		<p>A mosaic remembering Willow Rose Rainbow, created with her friends. The children chose highly textural mosaic pieces for this artwork.</p>
-        <small class="click">More images to follow shortly<!-- Click below for full image --></small>
-		<!-- <ul class="gallery portrait" data-pswp>
+        <small class="click">Click below for full image</small>
+		<ul class="gallery portrait">
                     <li>
-                        <a href="img/portfolio/cardiff-mos/cardiff-mos-2.jpg" data-caption="">
-                            <img src="img/portfolio/cardiff-mos/thumbs/cardiff-mos-2.jpg" alt="" class="top">
+                        <a href="img/portfolio/memorial-mosaic/1.avif">
+                            <img src="img/portfolio/memorial-mosaic/1-thumb.avif" alt="A child placing a tile on the mosaic." width="500" height="375">
                         </a>
                     </li>
                     <li>
-                        <a href="img/portfolio/cardiff-mos/cardiff-mos-3.jpg">
-                            <img src="img/portfolio/cardiff-mos/thumbs/cardiff-mos-3.jpg" alt="">
+                        <a href="img/portfolio/memorial-mosaic/2.avif">
+                            <img src="img/portfolio/memorial-mosaic/2-thumb.avif" alt="The colorful rainbow ribbon in the mosaic." width="500" height="473">
                         </a>
                     </li>
                     <li>
-                        <a href="img/portfolio/cardiff-mos/cardiff-mos-4.jpg">
-                            <img src="img/portfolio/cardiff-mos/thumbs/cardiff-mos-4.jpg" alt="">
+                        <a href="img/portfolio/memorial-mosaic/3.avif">
+                            <img src="img/portfolio/memorial-mosaic/3-thumb.avif" alt="" width="375" height="500">
                         </a>
                     </li>
                     <li>
-                        <a href="img/portfolio/cardiff-mos/cardiff-mos-5.jpg">
-                            <img src="img/portfolio/cardiff-mos/thumbs/cardiff-mos-5.jpg" alt="">
+                        <a href="img/portfolio/memorial-mosaic/4.avif">
+                            <img src="img/portfolio/memorial-mosaic/4-thumb.avif" alt="" width="375" height="500">
                         </a>
                     </li>
-                </ul> -->
+                </ul>
 		<ul>
 			<li>Location – Craig-Y-Parc School for disabled children and those with profound and multiple learning difficulties, Cardiff.</li>
-			<li>Funder – Willow's family and in kind from Dani Lee Arts</li>
 			<li>Partner – Gardd Y Plant Kindergarden</li>
+			<li>Funded by – Willow's family, Dani Lee Arts in kind</li>
 		</ul>
 	</article>
 
 	
 	<ul class="page-links">
-			<li><a href="portfolio.html">1</a></li>
-			<li class="active"><a href="portfolio2.html">2</a></li>
+			<li><a href="portfolio1.html">1</a></li>
+			<li><a href="portfolio2.html">2</a></li>
 			<li><a href="portfolio3.html">3</a></li>
 		</ul>
 	
 </main>
 
-<footer class="footer">
-
-    <div class="footer-nav-wrap">
-        
-        <ul class="footer-nav nav">
-            <li><a href="./">Home</a></li>
-            <li class="active"><a href="portfolio.html">Portfolio</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="news.html">News</a></li>
-			<li><a href="booking.html">Booking</a></li>
-        </ul>
-        
-        <div class="footer-links">
-            <div>
-                <a href="tel:07971286442">07971 286442</a>
-            </div>
-            <div>
-                <a href="mailto:dani@danileearts.co.uk">dani@danileearts.co.uk</a>
-            </div>
-        </div>
-    
-    </div>
-        
-    <div class="copy">&copy;2020 Dani Lee Arts, Wernlas, Cwmdu, Llandeilo, Carmarthenshire, SA19 7EE.</div>
-
-</footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.js" charset="utf-8"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe-ui-default.min.js" charset="utf-8"></script>
-
-<script src="js/scripts.min.js"></script>	
-	<script>
-		photoswipeSimplify.init({
-            history: false,
-            focus: false,
-        });
-	</script>
+@@include('includes/footer.html')
 
 </body>
 </html>

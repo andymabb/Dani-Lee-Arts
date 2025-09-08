@@ -28,28 +28,75 @@
 		<a href="mailto:dani@danileearts.co.uk">dani@danileearts.co.uk</a>
 	</div>
 </div>
-<header class="header">
-	<a href="./" class="hgroup">
-		<picture>
-			<source type='image/avif' srcset='img/dani-lee.avif'>
-			<img src='img/dani-lee.png' width='394' height='89' alt='Dani Lee Arts'>
-		</picture>
-	</a>
-	
-	<ul class="mainnav nav">
-		<li><a href="./">Home</a></li>
-		<li><a href="portfolio.html">Portfolio</a></li>
-		<li><a href="about.html">About</a></li>
-		<li class="active"><a href="news.html">News</a></li>
-		<li><a href="booking.html">Booking</a></li>
-	</ul>
-</header>
+@@include('includes/header.html')
 
 <main class="main" id="main">
+
+	<div class="news-item">
+		<div class="news-item-header">
+			<h2 class="news-item-title">Our Special Moment at The Big Reveal</h2>
+			<time datetime="2025-07-06">6<sup>th</sup> July 2025</time>
+			<p class="news-item-author">Article by Kirstin Heidler and Jan Jones, Llandeilo community members involved in the design and mosaic workshops.</p>
+		</div>
+		<div style="display:grid; grid-template-columns: 1fr 1fr;gap:1em; margin-bottom: 2em;">
+			<figure style="align-self: center; justify-self: center;">
+				<img src="img/news/august2025/1.avif" alt="">
+				<figcaption>Some of the mural creators</figcaption>
+			</figure >
+			<figure style="align-self: center; justify-self: center;">
+				<img src="img/news/august2025/2.avif" alt="">
+				<figcaption>The ribbon being cut to unveil the mural</figcaption>
+			</figure>
+			<figure style="align-self: center; justify-self: center; grid-column: span 2;">
+				<img src="img/news/august2025/3.avif" alt="">
+				<figcaption>The Amman Valley Community Mural</figcaption>
+			</figure>
+		</div>
+		<p>On 28th June a large and enthusiastic crowd gathered in Glanaman Square for the unveiling of the Amman Valley Community Mural. With a drum roll provided by our local drummers, the red ribbon was cut by our oldest and youngest contributors, Jan Slade and James Brook, symbolically representing everyone who took part. As the veil dropped, it revealed a breathtaking mosaic—a vibrant reflection of the community that created it. Thank you to all those who came out to celebrate with us.</p>
+
+		<p>This isn’t just any public artwork; it was a shared creation. Designed, crafted and installed by a huge amount of amazing individuals who live in, and love this place. We were all taught and guided by an incredible community artist, Dani Lee.</p>
+
+		<h3>The Story Behind the Tiles</h3>
+
+		<p>The journey began almost exactly a year ago, with the first Ideas and Design Workshop, where Dani asked us the question “What matters to us here”?</p>
+
+		<p>From that point, ideas began to flow. In brainstorming sessions, residents shared stories, sketched scenes, and explored the themes that define life in Cwmaman. A word workshop added further inspiration, and over time, a collective vision emerged—one that celebrated the history, identity, and spirit of the valley.</p>
+
+		<p>Once the final design was complete, the hands-on mosaic work began. The community of Cwmaman and friends created the mosaic in sections on flexible mesh at Bro Ryan Hall in Glanaman. It has been a labour of love, with hundreds of hours, countless cups of tea, and a great deal of laughter, patience, and dedication.</p>
+
+		<p>When the last tile was set, the team moved on to the wall to install the mosaic in it’s final position. Every step—from prepping and grouting to cleaning and those all important finishing touches—were carried out with care and pride, even the organisation of “The Big Reveal” itself was a community effort.</p>
+
+		<h3>A Mural Full of Meaning</h3>
+
+		<p>The finished mural is more than just beautiful, it’s rich with meaning. It tells a story, shaped by the people who live here, and every detail was chosen by the community.</p>
+
+		<p>Look closely and you’ll see the majestic mountains of Tair Carn Isaf rising in the background. We included some Welsh myth and legend by incorporating a beautiful dragon in our hills, as she gently breathes she creates the morning mist. Within that mist are figures, cyclists and horse riders along the riverside path. You’ll find a proud tribute to Yr Aman Rugby Club, their voices reaching skyward in song. There’s Hen Bethel chapel and its candlelit plygain tradition, echoing centuries of local heritage.</p>
+
+		<p>Welcoming terraced houses glow with light and love, with the word “hiraeth” above. The river winds through the scene, alive with wildlife, from local wildflowers to the dippers and otters, even a red kite flying high. At the foundation we have our industrial history, represented in the pick axe, Raven Colliery and the minors helmet that still shines its light across our valley. </p>
+
+		<p>For the young (and young at heart), there’s even a hidden challenge: can you spot all twelve little fish hidden in the river?</p>
+
+		<p>For more photos see <a href="portfolio1.html">Portfolio</a></p>
+
+
+		<h3>A Legacy for the Future</h3>
+
+		<p>This mural is more than just a beautiful piece of art. It’s a reflection of who we are. It tells a story—our story—crafted by the hands of the people who live and love this place. It’s something we can all be proud of, and it will stand here for years to come, a colourful and lasting symbol of what we can achieve together.</p>
+
+		<p>A massive thank you to every person who helped bring the mural to life. We hope it brings joy, pride, and inspiration to all who pass by.</p>
+
+
+		<p>Please go take a look for yourself! The mural can be found on the wall to the right as you enter the car park to Cwmaman Community Centre in Glanaman. <a href="https://maps.app.goo.gl/sYve8xPL8XAPW7nB9">Map</a></p>
+
+		<p>If you're curious about how this extraordinary mural came to life, you’re in luck. The Carmarthen Archives (behind Carmarthen Library) and The Amman Valley Town Council holds an archive of design sketches, community contributions, and a slide show capturing the process—from first ideas to the final tile. </p>
+
+		<p>This project was made possible thanks to the generous support of Shadows Depression Support Group, The National Lottery Community Fund, LBS, Carmarthenshire County Council and Ardex.</p>
+	</div>
 	<div class="news-item">
 		<div class="news-item-header">
 			<h2 class="news-item-title">Cwmaman Community Mural</h2>
 			<time datetime="2024-05-26">26th May 2024</time>
+			
 		</div>
 		<p>We are excited to announce that the creation of a mosaic mural, designed and made by you, the community of Glanaman, is due to begin this June!</p>
 		<img src="img/booking/ammanford-wall.avif" alt="Wall" class="fr">
@@ -214,32 +261,7 @@ We welcome all who are aged 13 and over. Support is being offered for anyone who
 	
 </main>
 
-<footer class="footer">
-
-	<div class="footer-nav-wrap">
-		
-		<ul class="footer-nav nav">
-			<li><a href="./">Home</a></li>
-			<li><a href="portfolio.html">Portfolio</a></li>
-			<li><a href="about.html">About</a></li>
-			<li class="active"><a href="news.html">News</a></li>
-			<li><a href="booking.html">Booking</a></li>
-		</ul>
-		
-		<div class="footer-links">
-			<div>
-				<a href="tel:07971286442">07971 286442</a>
-			</div>
-			<div>
-				<a href="mailto:dani@danileearts.co.uk">dani@danileearts.co.uk</a>
-			</div>
-		</div>
-	
-	</div>
-		
-	<div class="copy">&copy;2020 Dani Lee Arts, Wernlas, Cwmdu, Llandeilo, Carmarthenshire, SA19 7EE.</div>
-
-</footer>
+@@include('includes/footer.html')
 
 </body>
 </html>

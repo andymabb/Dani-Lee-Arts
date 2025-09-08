@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dani Lee Arts - Community Arts Mosaic Cob Carmarthenshire Earth Art</title>
+<meta name="description" content="Home - Creative arts activities that develop, sustain and enrich communities. Murals of mosaic or cob, earth ovens and sculpture">
+
+<link rel="apple-touch-icon" sizes="180x180" href="img/favicons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="img/favicons/favicon-16x16.png">
+<link rel="manifest" href="img/favicons/site.webmanifest">
+
+<link href="css/style.css" rel="stylesheet">
+
+</head>
+
+<body class="page-home">
+<div id="skiptocontent"><a href="#main">skip to main content</a></div>
+<div class="contact-bar">
+	<div>
+		<a href="tel:07971286442">07971 286442</a>
+	</div>
+	<div>
+		<a href="mailto:dani@danileearts.co.uk">dani@danileearts.co.uk</a>
+	</div>
+</div>
+
+@@include('includes/header.html')
+
+<main class="main" id="main">
+<h2 class="lede">Let us know you’re interested in getting involved in the Amman Valley Community Mosaic Mural !</h2>	
+<p>This project will bring the community together to create a fantastic mural from mosaic. We have already created a brilliant design through Open Community Design Workshops. Throughout this autumn and winter 2024-25, we will be making the mosaic mural in fun, friendly, and FREE <strong>Community Mosaic Workshops!</strong> Dates to be announced.</p>
+
+<p>To register your interest please complete this form:</p>
+
+<!-- <h2 class="git"><a href="https://docs.google.com/forms/d/e/1FAIpQLSeqgPIUkiBxdBBK92I3Kez1m-McJExH523h0_-8HSI_Lm91EQ/viewform?usp=sf_link" class="button">Register here</a></h2> -->
+
+<div id="google-form-container"></div>
+
+<p>The mural will be going onto a brick wall in Glanaman. It’s on your right as you go into the car park by Cwmaman Community Centre and it’s almost opposite Aman Pharmacy.</p>
+
+<ul>
+	<li>Workshops open to anyone living or working in or near the Amman Valley and age 13+</li>
+	<li>No experience or artistic skills necessary as there will be full expert tuition on hand</li>
+	<li>All materials, tools and refreshments provided</li>
+	<li>Workshops will be held near Garnant</li>
+</ul>
+
+<p>Looking forward to getting creative together!<br>Dani</p>
+
+<img src="img/booking/montage.avif" alt="" width="1024" height="300" style="margin-block:2em">
+
+<p>With kind support from</p>
+			<ul class="logos sponsors" style="gap:1em; max-width: fit-content; margin: 0 0 1em 0;">
+				<li><a href="https://www.tnlcommunityfund.org.uk/"><img src="img/logos/lottery.png" alt="Lottery Funding" width="135" height="78" loading="lazy"></a></li>
+				<li><a href="http://www.shadowsdepressionsupportgroup.co.uk/"><img src="img/logos/shadows.avif" alt="Lottery Funding" width="117" height="150" loading="lazy"></a></li>
+			</ul>	
+	
+	
+</main>
+
+@@include('includes/footer.html')
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var formContainer = document.getElementById('google-form-container');
+        var iframe = document.createElement('iframe');
+        iframe.src = "https://docs.google.com/forms/d/e/1FAIpQLSeqgPIUkiBxdBBK92I3Kez1m-McJExH523h0_-8HSI_Lm91EQ/viewform?usp=sf_link";
+        iframe.width = "100%";
+        iframe.height = "800px";
+        iframe.frameBorder = "0";
+        iframe.marginHeight = "0";
+        iframe.marginWidth = "0";
+        formContainer.appendChild(iframe);
+    });
+    </script>
+
+</body>
+</html>

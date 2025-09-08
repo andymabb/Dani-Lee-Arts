@@ -1,6 +1,8 @@
 @import "reboot.css";
 @import "links.css";
 @import "gallery.css"; 
+@import "booking.css"; 
+@import "glightbox.css"; 
 
 :root{
 	--primary: #343b45;
@@ -207,8 +209,11 @@ h2{
 
 .main a{
 	color: var(--secondary);
+	color: #b71735;
 }
-
+.main .lightbox-text{
+	color:#343b45;
+}
 
 
 .hgroup{
@@ -217,7 +222,7 @@ h2{
 }
 
 .project{
-	margin-bottom: 2em;
+	margin-bottom: 3em;
 	background: rgba(205,205,205,.1);
 	padding: 1em;
 	border-radius:5px;
@@ -662,4 +667,8 @@ a.button, .audio{
 
 .news-page .meta{
 	font-style: italic;
+}
+
+.star{
+	list-style-type: "★ ";
 }

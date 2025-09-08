@@ -1,0 +1,10 @@
+# Modern browsers with excellent coverage (~91% UK users)
+# Excludes only IE and dead browsers
+
+> 0.1%
+last 2 versions
+not dead
+not IE > 0
+not op_mini all
+
+# This provides good modern CSS support while maintaining broad compatibility

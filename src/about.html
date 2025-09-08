@@ -29,26 +29,11 @@
 		<a href="mailto:dani@danileearts.co.uk">dani@danileearts.co.uk</a>
 	</div>
 </div>
-<header class="header">
-	<a href="./" class="hgroup">
-		<picture>
-			<source type='image/avif' srcset='img/dani-lee.avif'>
-			<img src='img/dani-lee.png' width='394' height='89' alt='Dani Lee Arts'>
-		</picture>
-	</a>
-	
-	<ul class="mainnav nav">
-		<li><a href="./">Home</a></li>
-		<li><a href="portfolio.html">Portfolio</a></li>
-		<li class="active"><a href="about.html">About</a></li>
-		<li><a href="news.html">News</a></li>
-		<li><a href="booking.html">Booking</a></li>
-	</ul>
-</header>
+@@include('includes/header.html')
 
 <main class="main" id="main">
 	<div class="with-side-bar">
-		<div class="content">
+		<article class="content" id="about-dani">
 			<p>Dani Lee Arts was established by Dani Lee in response to a need for community art in South-West Wales.</p>
 
 			<blockquote class="dani-quote" cite="Dani Lee">
@@ -77,7 +62,7 @@
 			<p>Dani Lee is a highly experienced and motivated workshop facilitator and proficient project manager. </p>
 			<p>Dani Lee graduated from Wimbledon School of Art, London in 1997 with a BA(Hons) in Sculpture. Whilst developing her freelance community art work, she collaborated with Jewels Norburn and Elinor Seath in 1999 to establish <a href="http://www.art4space.co.uk/">Art4Space</a>, a hugely successful community arts organisation. Together they have completed over 350 commissions in London and Wales.</p>
 			<p>In 2005 she moved to rural South West Wales where she now lives with her family and ducks in her self-built eco home (the ducks have their own house!).</p>
-			<ul class="gallery square" data-pswp>
+			<ul class="gallery square">
         <li>
     		<a href="img/about/ab1.jpg">
         		<img src="img/about/thumbs/ab1.jpg" alt="">
@@ -113,7 +98,7 @@
 			<p>We carry out risk assessments for every project.</p>
 			<p>Dani Lee Arts are committed to raising environmental awareness within the groups that we work with. We use recycled and reused tiles, crockery and beads in our mosaics wherever possible. We use biodegradable cleaning products, recycled pots for containers and old cleaned rags for cloths. Dani Lee Arts support local businesses and encourage localised volunteering.</p>
 
-		</div>
+		</article>
 		
 		<div class="sidebar">
 
@@ -140,11 +125,11 @@
 			</ul>
 			<h2 class="bb">Past Work</h2>
 			<ul class="past-work">
-				<li><a href="portfolio.html#mosaic-street-mural">Mosaic Street Mural - Ammanford</a></li>
+				<li><a href="portfolio1.html#mosaic-street-mural">Mosaic Street Mural - Ammanford</a></li>
 				<!-- link to follow -->
-				<li><a href="portfolio.html#p1-1">Mosaic Mural and Community Notice Board - Llandeilo</a></li>
-				<li><a href="portfolio.html#p1-2">Community Cob Mural - Ammanford</a></li>
-				<li><a href="portfolio.html#p1-3">School Garden Mosaic - Llandeilo</a></li>
+				<li><a href="portfolio1.html#p1-1">Mosaic Mural and Community Notice Board - Llandeilo</a></li>
+				<li><a href="portfolio1.html#p1-2">Community Cob Mural - Ammanford</a></li>
+				<li><a href="portfolio1.html#p1-3">School Garden Mosaic - Llandeilo</a></li>
 				<li><a href="portfolio2.html#p2-1">Memorial Mosaic - Cardiff</a></li>
 				<li><a href="portfolio2.html#p2-2">Cob Buildings - Haverfordwest</a></li>
 				<li><a href="portfolio2.html#p2-3">Playground Cob Murals - Talley</a></li>
@@ -161,83 +146,8 @@
 	
 </main>
 
-<footer class="footer">
-
-	<div class="footer-nav-wrap">
-		
-		<ul class="footer-nav nav">
-			<li><a href="./">Home</a></li>
-			<li><a href="portfolio.html">Portfolio</a></li>
-			<li class="active"><a href="about.html">About</a></li>
-			<li><a href="news.html">News</a></li>
-			<li><a href="booking.html">Booking</a></li>
-		</ul>
-		
-		<div class="footer-links">
-			<div>
-				<a href="tel:07971286442">07971 286442</a>
-			</div>
-			<div>
-				<a href="mailto:dani@danileearts.co.uk">dani@danileearts.co.uk</a>
-			</div>
-		</div>
+@@include('includes/footer.html')	
 	
-	</div>
-		
-	<div class="copy">&copy;2020 Dani Lee Arts, Wernlas, Cwmdu, Llandeilo, Carmarthenshire, SA19 7EE.</div>
 
-</footer>
-
-<script>
-//show more
-	var show = function (ele) {
-	ele.style.display = 'block';
-};
-
-var hide = function (ele) {
-	ele.style.display = 'none';
-};
-
-var toggle = function (ele) {
-
-	// If the eleent is visible, hide it
-	if (window.getComputedStyle(ele).display === 'block') {
-		hide(ele);
-		return;
-	}
-
-	// Otherwise, show it
-	show(ele);
-
-};
-
-// Listen for click events
-document.addEventListener('click', function (event) {
-
-	// Make sure clicked eleent is our toggle
-	if (!event.target.classList.contains('toggle')) return;
-
-	// Prevent default link behavior
-	event.preventDefault();
-
-	// Get the content
-	var content = document.querySelector(event.target.hash);
-	if (!content) return;
-
-	// Toggle the content
-	toggle(content);
-
-}, false);
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.js" charset="utf-8"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe-ui-default.min.js" charset="utf-8"></script>
-
-<script src="js/scripts.min.js"></script>	
-	<script>
-		photoswipeSimplify.init({
-            history: false,
-            focus: false,
-        });
-	</script>
 </body>
 </html>
