@@ -39,7 +39,7 @@ const paths = {
     watch: "src/**/*.html"
   },
   static: {
-    src: ['src/**/*', '!src/**/*.html', '!src/css/**/*', '!src/js/**/*'],
+    src: ['src/**/*', '!src/**/*.html', '!src/css/**/*', '!src/js/**/*', '!src/includes/**/*'],
     dest: 'dist'
   }
 };
