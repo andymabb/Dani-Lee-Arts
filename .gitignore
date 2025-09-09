@@ -78,3 +78,6 @@ jspm_packages/
 
 # parcel-bundler cache (https://parceljs.org/)
 .parcel-cache
+
+# Ignore gulp-commands markdown file
+gulp-commands.md
