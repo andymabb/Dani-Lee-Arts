@@ -43,7 +43,7 @@ module.exports = {
   // Development Server Configuration
   server: {
     port: 3000,
-    open: false, // Don't auto-open browser
+    open: true, // Auto-open browser
     notify: false, // Disable browser notifications
     baseDir: './dist'
   },
