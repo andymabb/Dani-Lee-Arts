@@ -1,6 +1,9 @@
 # Dani Lee Arts - Website
 
-Community Arts Mosaic Cob Carmarthenshire Earth Art website built with modern Gulp workflow.
+Community Arts Projects
+
+## Prerequisites
+You need [Node.js](https://nodejs.org/) (version 18 or higher) and npm installed to use the build system and run development commands.
 
 ## Features
 - ✅ Modern Gulp build system with cache busting
@@ -12,8 +15,6 @@ Community Arts Mosaic Cob Carmarthenshire Earth Art website built with modern Gu
 - ✅ 91% UK browser coverage
 - ✅ Source maps for debugging
 - ✅ Production builds
-
-gulp dev
 
 ## Setup & Development
 
