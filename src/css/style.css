@@ -209,7 +209,7 @@ h2{
 
 .main a{
 	color: var(--secondary);
-	color: #b71735;
+	/* color: #b71735; */
 }
 .main .lightbox-text{
 	color:#343b45;
