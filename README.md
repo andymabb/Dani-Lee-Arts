@@ -13,29 +13,29 @@ Community Arts Mosaic Cob Carmarthenshire Earth Art website built with modern Gu
 - ✅ Source maps for debugging
 - ✅ Production builds
 
-## Development
+gulp dev
 
-### Prerequisites
-Requires Node.js 18+ and shared dependencies in parent MySites directory.
+## Setup & Development
 
-### Setup
-```bash
-# Dependencies are managed in parent MySites directory
-cd "c:\Users\andy\MySites"
-npm install  # (if not already done)
+This project now uses a local `package.json` for all dependencies. To set up for development:
 
-# Navigate to project
-cd "Websites\Dani"
+```powershell
+# Install dependencies
+npm install
 
-# Start development server
+# Start development server (auto-reloads on changes)
 gulp dev
 ```
 
-### Commands
-- `gulp dev` - Development server with live reload (default)
-- `gulp build` - Build for deployment  
-- `gulp prod` - Production build (optimized)
-- `gulp clean` - Clean dist folder
+### Other Gulp Commands
+- `gulp build`   # Build for deployment (dist/)
+- `gulp prod`    # Production build (minified, cache-busted)
+- `gulp clean`   # Remove all files from dist/
+
+## Notes
+- Make all edits in the `src/` folder. Do not edit files in `dist/` directly.
+- Header and contact bar are now centralized in `src/includes/header.html`.
+- All FTP deployment and related packages have been removed. Use standard web hosting or GitHub for deployment.
 
 ## Project Structure
 ```
@@ -57,7 +57,7 @@ gulpfile.js          # Modern build configuration
 
 ## Changes
 - **Development**: Only make changes in the `src` folder
-- **Images**: Optimized images are added directly to the `dist` folder
+- **Images**: Images are resized and converted to avif format *before* being added to src/img folder
 - **Templates**: Header and footer are abstracted into includes
 - **Navigation**: Uses dynamic nav-active.js script
 - **Cache Busting**: CSS and JS files get timestamp hashes
@@ -79,3 +79,5 @@ Built CSS and JS files include timestamps to force browser updates:
 
 ## Deployment
 Built files are in the `dist/` directory and ready for upload to web server.
+
+
