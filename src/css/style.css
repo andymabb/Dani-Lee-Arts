@@ -42,7 +42,17 @@ body::before{
 }
 
 h2{
-	font-size: 1.17em;
+	font-size: 1.25em;
+}
+
+h2+h3{
+	margin-top: 0.5lh;
+	margin-bottom: .2lh;
+}
+
+h3{
+	font-size: 1.10em;
+	/* font-weight: 600; */
 }
 
 @media screen {
@@ -210,9 +220,6 @@ h2{
 .main a{
 	color: var(--secondary);
 	/* color: #b71735; */
-}
-.main .lightbox-text{
-	color:#343b45;
 }
 
 
@@ -671,4 +678,10 @@ a.button, .audio{
 
 .star{
 	list-style-type: "★ ";
+}
+
+.gslide-description {
+  background: #000!important;
+  color:#fff!important;
+  font-size: 1.2em;
 }

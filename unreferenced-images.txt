@@ -1,0 +1,12 @@
+UNREFERENCED IMAGES IN dist/img FOLDER
+Generated: 2026-02-03 12:33:37
+============================================================
+
+Total images in dist/img: 207
+Unreferenced images: 0
+Referenced images: 207
+
+============================================================
+
+All images are currently referenced in HTML or CSS files.
+

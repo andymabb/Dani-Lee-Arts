@@ -2,11 +2,10 @@ const gulp = require('gulp');
 const terser = require('gulp-terser');
 const concat = require('gulp-concat');
 const postcss = require("gulp-postcss");
-const sourcemaps = require("gulp-sourcemaps");
-const minifyHTML = require("gulp-htmlmin");
+const through = require('through2');
+const { minify } = require('html-minifier-terser');
 const fileInclude = require('gulp-file-include');
 const browserSync = require('browser-sync');
-const del = require('del');
 const rename = require('gulp-rename');
 const replace = require('gulp-replace');
 const plumber = require('gulp-plumber');
@@ -26,6 +25,7 @@ require('dotenv').config({ silent: true });
 const autoprefixer = require('autoprefixer');
 const postcssImport = require("postcss-import");
 const cssnano = require('cssnano');
+const sourcemaps = require('gulp-sourcemaps');
 
 const server = browserSync.create();
 
@@ -42,13 +42,14 @@ const onError = function(err) {
   this.emit('end');
 };
 
-function clean() {
+async function clean() {
   // Reset timestamp for new build
   buildTimestamp = null;
   
   // This selectively deletes the files Gulp generates,
   // leaving your images and other assets untouched.
-  return del([
+  const { deleteAsync } = await import('del');
+  return deleteAsync([
     'dist/css/**/*', // Delete contents of the css folder
     'dist/js/**/*',  // Delete contents of the js folder
     'dist/*.html'
@@ -93,7 +94,6 @@ function js() {
   
   return gulp.src(paths.js.src)
     .pipe(plumber({ errorHandler: onError }))
-    .pipe(sourcemaps.init())
     .pipe(concat('scripts.js'))
     .pipe(terser({
       // Modern browser target - can use more aggressive compression
@@ -114,10 +114,29 @@ function js() {
       path.basename = `scripts-${buildTimestamp}`;
       path.extname = '.min.js';
     }))
-    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(paths.js.dest));
 }
 exports.js = js;
+
+function htmlMinify() {
+  return through.obj(async (file, enc, cb) => {
+    if (file.isBuffer()) {
+      try {
+        const minified = await minify(file.contents.toString(), {
+          collapseWhitespace: true,
+          removeComments: true,
+          minifyJS: true,
+          minifyCSS: true
+        });
+        file.contents = Buffer.from(minified);
+      } catch (err) {
+        cb(err);
+        return;
+      }
+    }
+    cb(null, file);
+  });
+}
 
 function html() {
     if (!buildTimestamp) buildTimestamp = Date.now();
@@ -130,12 +149,7 @@ function html() {
         }))
         .pipe(replace('style.css', `style-${buildTimestamp}.css`))
         .pipe(replace('scripts.min.js', `scripts-${buildTimestamp}.min.js`))
-        .pipe(minifyHTML({
-            collapseWhitespace: true,
-            removeComments: true,
-            removeAttributeQuotes: false,
-            conservativeCollapse: true
-        }))
+        .pipe(htmlMinify())
         .pipe(gulp.dest(paths.html.dest));
 }
 
